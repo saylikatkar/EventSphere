@@ -1,0 +1,41 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Resource | EventSphere</title>
+    <link rel="stylesheet" href="{% static 'events/venue.css' %}">
+</head>
+<body>
+    <main class="page">
+        <header class="page-header">
+            <div>
+                <span class="eyebrow">EventSphere / Resources</span>
+                <h1>Delete Resource</h1>
+                <p class="subtitle">Confirm before removing this resource.</p>
+            </div>
+        </header>
+
+        <section class="panel delete-panel">
+            <h2>Delete "{{ resource.name }}"?</h2>
+            <p>
+                This will permanently remove this resource from your inventory.
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-actions">
+                    <button class="button button-danger" type="submit">
+                        Yes, Delete Resource
+                    </button>
+                    <a class="button button-secondary" href="{% url 'resource_list' %}">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

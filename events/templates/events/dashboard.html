@@ -1,0 +1,141 @@
+
+{% extends "events/base.html" %}
+{% load static %}
+
+{% block title %}Dashboard | EventSphere{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'events/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-page">
+
+    <div class="dashboard-heading">
+        <div>
+            <p class="eyebrow">EVENT MANAGEMENT SYSTEM</p>
+            <h1>Dashboard</h1>
+            <p class="subtitle">Manage your events, venues and resources in one place.</p>
+        </div>
+
+        <a href="{% url 'event_create' %}" class="primary-button">
+            + Create Event
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Summary cards -->
+    <section class="summary-grid">
+
+        <div class="summary-card">
+            <p>Total Events</p>
+            <h2>{{ total_events }}</h2>
+            <span>All registered events</span>
+        </div>
+
+        <div class="summary-card">
+            <p>Upcoming Events</p>
+            <h2>{{ upcoming_events }}</h2>
+            <span>Today and future events</span>
+        </div>
+
+        <div class="summary-card">
+            <p>Available Venues</p>
+            <h2>{{ available_venues }}</h2>
+            <span>Venues marked available</span>
+        </div>
+
+        <div class="summary-card">
+            <p>Total Resources</p>
+            <h2>{{ total_resources }}</h2>
+            <span>Registered resource types</span>
+        </div>
+
+    </section>
+
+    <!-- Quick navigation -->
+    <section class="dashboard-section">
+        <h2>Quick Access</h2>
+
+        <div class="quick-links">
+            <a href="{% url 'event_list' %}">Manage Events </a>
+            <a href="{% url 'venue_list' %}">Manage Venues </a>
+            <a href="{% url 'resource_list' %}">Manage Resources </a>
+            <a href="{% url 'schedule_list' %}">Scheduling </a>
+        </div>
+    </section>
+
+    <!-- Event table -->
+    <section class="dashboard-section">
+        <div class="section-heading">
+            <div>
+                <h2>Event Overview</h2>
+                <p>Review scheduled events and their assigned venues.</p>
+            </div>
+            <a href="{% url 'event_list' %}">View all events</a>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Venue</th>
+                        <th>Attendees</th>
+                        <th>Budget</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for event in events %}
+                        <tr>
+                            <td>
+                                <strong>{{ event.name }}</strong>
+                                <small>{{ event.event_type }}</small>
+                            </td>
+                            <td>{{ event.event_date|date:"d M Y" }}</td>
+                            <td>
+                                {{ event.start_time|time:"g:i A" }}
+                                –
+                                {{ event.end_time|time:"g:i A" }}
+                            </td>
+                            <td>
+                                {% if event.venue %}
+                                    {{ event.venue.name }}
+                                {% else %}
+                                    Not assigned
+                                {% endif %}
+                            </td>
+                            <td>{{ event.expected_attendees }}</td>
+                            <td>₹{{ event.budget|floatformat:2 }}</td>
+                            <td>
+                                <a href="{% url 'event_update' event.pk %}">
+                                    Edit
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7" class="empty-state">
+                                No events have been added yet.
+                                <a href="{% url 'event_create' %}">
+                                    Create your first event
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+{% endblock %}
+```

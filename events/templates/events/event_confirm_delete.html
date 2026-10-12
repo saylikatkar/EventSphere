@@ -1,0 +1,27 @@
+
+{% extends "events/base.html" %}
+
+{% block title %}Delete Event | EventSphere{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <h1 class="h4">Delete Event</h1>
+        <p>
+            Are you sure you want to delete
+            <strong>{{ event.name }}</strong>?
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button class="btn btn-danger" type="submit">
+                Yes, Delete
+            </button>
+            <a class="btn btn-secondary"
+               href="{% url 'event_detail' event.pk %}">
+                Cancel
+            </a>
+        </form>
+    </div>
+</div>
+{% endblock %}

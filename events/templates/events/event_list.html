@@ -1,0 +1,132 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management | EventSphere</title>
+    <link rel="stylesheet" href="{% static 'events/venue.css' %}">
+</head>
+<body>
+    <main class="page">
+        <header class="page-header">
+            <div>
+                <span class="eyebrow">EventSphere / Management</span>
+                <h1>Event Management</h1>
+                <p class="subtitle">
+                    Create, organize, and manage your events and their venues.
+                </p>
+            </div>
+
+            <a class="button" href="{% url 'event_create' %}">
+                + Create Event
+            </a>
+        </header>
+
+        <p>
+            <a class="button button-secondary" href="{% url 'dashboard' %}">
+                ← Dashboard
+            </a>
+        </p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <section class="panel">
+            <div class="panel-heading">
+                <h2>All Events ({{ events|length }})</h2>
+            </div>
+
+            {% if events %}
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Event</th>
+                                <th>Category</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Attendees</th>
+                                <th>Venue</th>
+                                <th>Budget</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for event in events %}
+                                <tr>
+                                    <td class="venue-name">
+                                        {{ event.name }}
+                                    </td>
+
+                                    <td>
+                                        <span class="venue-type">
+                                            {{ event.event_type }}
+                                        </span>
+                                    </td>
+
+                                    <td>{{ event.event_date|date:"d M Y" }}</td>
+
+                                    <td>
+                                        {{ event.start_time|time:"g:i A" }}
+                                        – {{ event.end_time|time:"g:i A" }}
+                                    </td>
+
+                                    <td>{{ event.expected_attendees }}</td>
+
+                                    <td>
+                                        {% if event.venue %}
+                                            {{ event.venue.name }}
+                                        {% else %}
+                                            <span class="status status-unavailable">
+                                                Not assigned
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>₹{{ event.budget|floatformat:2 }}</td>
+
+                                    <td>
+                                        <div class="actions">
+                                            <a
+                                                class="action-link"
+                                                href="{% url 'event_detail' event.pk %}"
+                                            >View</a>
+
+                                            <a
+                                                class="action-link"
+                                                href="{% url 'event_update' event.pk %}"
+                                            >Edit</a>
+
+                                            <a
+                                                class="action-link action-delete"
+                                                href="{% url 'event_delete' event.pk %}"
+                                            >Delete</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No events yet</h3>
+                    <p>
+                        Create your first event to start managing schedules,
+                        budgets, attendees, and venues.
+                    </p>
+                    <a class="button" href="{% url 'event_create' %}">
+                        + Create Your First Event
+                    </a>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

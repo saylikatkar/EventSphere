@@ -1,0 +1,115 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Management | EventSphere</title>
+    <link rel="stylesheet" href="{% static 'events/venue.css' %}">
+</head>
+<body>
+    <main class="page">
+        <header class="page-header">
+            <div>
+                <span class="eyebrow">EventSphere / Management</span>
+                <h1>Resource Management</h1>
+                <p class="subtitle">
+                    Manage equipment, furniture, and other event resources.
+                </p>
+            </div>
+            <a class="button" href="{% url 'resource_create' %}">
+                + Add Resource
+            </a>
+        </header>
+
+        <p>
+            <a class="button button-secondary" href="{% url 'dashboard' %}">
+                ← Dashboard
+            </a>
+        </p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <section class="panel">
+            <div class="panel-heading">
+                <h2>All Resources ({{ resources|length }})</h2>
+            </div>
+
+            {% if resources %}
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Resource</th>
+                                <th>Category</th>
+                                <th>Quantity</th>
+                                <th>Unit Cost</th>
+                                <th>Total Value</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for resource in resources %}
+                                <tr>
+                                    <td class="venue-name">
+                                        {{ resource.name }}
+                                    </td>
+                                    <td>
+                                        <span class="venue-type">
+                                            {{ resource.get_category_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ resource.quantity }}</td>
+                                    <td>₹{{ resource.unit_cost|floatformat:2 }}</td>
+                                    <td>
+                                        ₹{% widthratio resource.unit_cost 1 resource.quantity %}
+                                    </td>
+                                    <td>
+                                        {% if resource.is_available %}
+                                            <span class="status status-available">
+                                                Available
+                                            </span>
+                                        {% else %}
+                                            <span class="status status-unavailable">
+                                                Unavailable
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="actions">
+                                            <a
+                                                class="action-link"
+                                                href="{% url 'resource_update' resource.pk %}"
+                                            >Edit</a>
+                                            <a
+                                                class="action-link action-delete"
+                                                href="{% url 'resource_delete' resource.pk %}"
+                                            >Delete</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No resources added yet</h3>
+                    <p>
+                        Add equipment and supplies to start managing your inventory.
+                    </p>
+                    <a class="button" href="{% url 'resource_create' %}">
+                        + Add Your First Resource
+                    </a>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

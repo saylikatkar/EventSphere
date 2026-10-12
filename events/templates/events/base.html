@@ -1,0 +1,58 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EventSphere{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'events/style.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <div class="app-layout">
+
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="brand-icon">E</span>
+                <span>EventSphere</span>
+            </div>
+
+            <p class="nav-label">MAIN MENU</p>
+
+            <nav class="navigation">
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'event_list' %}">Events</a>
+                <a href="{% url 'venue_list' %}">Venues</a>
+                <a href="{% url 'resource_list' %}">Resources</a>
+                <a href="{% url 'schedule_list' %}">Scheduling </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                Event Management System
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <span class="topbar-title">EventSphere</span>
+                    <span class="topbar-subtitle">Event Management Portal</span>
+                </div>
+            </header>
+
+            <div class="page-content">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </main>
+
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+```

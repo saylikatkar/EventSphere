@@ -1,0 +1,159 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheduling & Conflicts | EventSphere</title>
+    <link rel="stylesheet" href="{% static 'events/venue.css' %}">
+</head>
+<body>
+    <main class="page">
+        <header class="page-header">
+            <div>
+                <span class="eyebrow">EventSphere / Planning</span>
+                <h1>Scheduling & Conflict Detection</h1>
+                <p class="subtitle">
+                    Review event timings, venue assignments, and booking conflicts.
+                </p>
+            </div>
+            <a class="button" href="{% url 'event_create' %}">
+                + Schedule Event
+            </a>
+        </header>
+
+        <p>
+            <a class="button button-secondary" href="{% url 'dashboard' %}">
+                ← Dashboard
+            </a>
+        </p>
+
+        <section class="panel" style="margin-bottom: 24px;">
+            <div class="panel-heading">
+                <h2>Scheduling Overview</h2>
+            </div>
+            <div style="padding: 24px; display: flex; flex-wrap: wrap; gap: 32px;">
+                <div>
+                    <div class="eyebrow">Total scheduled events</div>
+                    <h2>{{ events|length }}</h2>
+                </div>
+                <div>
+                    <div class="eyebrow">Detected conflicts</div>
+                    <h2 style="color: {% if conflict_count %}#dc2626{% else %}#15803d{% endif %};">
+                        {{ conflict_count }}
+                    </h2>
+                </div>
+            </div>
+        </section>
+
+        {% if conflict_count %}
+            <section class="panel" style="margin-bottom: 24px;">
+                <div class="panel-heading">
+                    <h2>Detected Venue Conflicts</h2>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Venue</th>
+                                <th>Event 1</th>
+                                <th>Event 2</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for conflict in conflicts %}
+                                <tr>
+                                    <td>{{ conflict.date|date:"d M Y" }}</td>
+                                    <td>{{ conflict.venue.name }}</td>
+                                    <td>
+                                        {{ conflict.event_one.name }}<br>
+                                        {{ conflict.event_one.start_time|time:"g:i A" }}
+                                        – {{ conflict.event_one.end_time|time:"g:i A" }}
+                                    </td>
+                                    <td>
+                                        {{ conflict.event_two.name }}<br>
+                                        {{ conflict.event_two.start_time|time:"g:i A" }}
+                                        – {{ conflict.event_two.end_time|time:"g:i A" }}
+                                    </td>
+                                    <td>
+                                        <a class="action-link"
+                                           href="{% url 'event_update' conflict.event_two.pk %}">
+                                            Review event
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        {% else %}
+            <div class="message" style="margin-bottom: 24px;">
+                No overlapping venue bookings were detected among saved events.
+            </div>
+        {% endif %}
+
+        <section class="panel">
+            <div class="panel-heading">
+                <h2>Event Schedule</h2>
+            </div>
+
+            {% if events %}
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Event</th>
+                                <th>Venue</th>
+                                <th>Attendees</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for event in events %}
+                                <tr>
+                                    <td>{{ event.event_date|date:"d M Y" }}</td>
+                                    <td>
+                                        {{ event.start_time|time:"g:i A" }}
+                                        – {{ event.end_time|time:"g:i A" }}
+                                    </td>
+                                    <td class="venue-name">{{ event.name }}</td>
+                                    <td>
+                                        {% if event.venue %}
+                                            {{ event.venue.name }}
+                                        {% else %}
+                                            <span class="status status-unavailable">
+                                                Not assigned
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ event.expected_attendees }}</td>
+                                    <td>
+                                        <a class="action-link"
+                                           href="{% url 'event_update' event.pk %}">
+                                            Edit
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No events scheduled</h3>
+                    <p>Create an event to start building your schedule.</p>
+                    <a class="button" href="{% url 'event_create' %}">
+                        + Create Event
+                    </a>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

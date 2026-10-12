@@ -1,0 +1,87 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venues | EventSphere</title>
+    <link rel="stylesheet" href="{% static 'events/venue.css' %}">
+</head>
+<body>
+    <main class="page">
+        <header class="page-header">
+            <div>
+                <span class="eyebrow">EventSphere / Management</span>
+                <h1>Venue Management</h1>
+                <p class="subtitle">Manage locations, capacities, and venue availability.</p>
+            </div>
+            <a class="button" href="{% url 'venue_create' %}">+ Add Venue</a>
+        </header>
+
+        <p>
+            <a class="button button-secondary" href="{% url 'dashboard' %}">← Dashboard</a>
+        </p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <section class="panel">
+            <div class="panel-heading">
+                <h2>All Venues ({{ venues|length }})</h2>
+            </div>
+
+            {% if venues %}
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Venue</th>
+                                <th>Type</th>
+                                <th>City</th>
+                                <th>Capacity</th>
+                                <th>Rental Cost</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for venue in venues %}
+                                <tr>
+                                    <td class="venue-name">{{ venue.name }}</td>
+                                    <td><span class="venue-type">{{ venue.venue_type }}</span></td>
+                                    <td>{{ venue.city }}</td>
+                                    <td>{{ venue.capacity }} people</td>
+                                    <td>₹{{ venue.rental_cost }}</td>
+                                    <td>
+                                        {% if venue.is_available %}
+                                            <span class="status status-available">Available</span>
+                                        {% else %}
+                                            <span class="status status-unavailable">Unavailable</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="actions">
+                                            <a class="action-link" href="{% url 'venue_update' venue.pk %}">Edit</a>
+                                            <a class="action-link action-delete" href="{% url 'venue_delete' venue.pk %}">Delete</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <h3>No venues yet</h3>
+                    <p>Add your first venue to start assigning locations to events.</p>
+                    <a class="button" href="{% url 'venue_create' %}">+ Add Your First Venue</a>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,38 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Venue | EventSphere</title>
+    <link rel="stylesheet" href="{% static 'events/venue.css' %}">
+</head>
+<body>
+    <main class="page">
+        <header class="page-header">
+            <div>
+                <span class="eyebrow">EventSphere / Venues</span>
+                <h1>Delete Venue</h1>
+                <p class="subtitle">Confirm before removing this location.</p>
+            </div>
+        </header>
+
+        <section class="panel delete-panel">
+            <h2>Delete "{{ venue.name }}"?</h2>
+            <p>
+                This action cannot be undone. Events assigned to this venue
+                will remain, but their venue assignment will be cleared.
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-actions">
+                    <button class="button button-danger" type="submit">Yes, Delete Venue</button>
+                    <a class="button button-secondary" href="{% url 'venue_list' %}">Cancel</a>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>
